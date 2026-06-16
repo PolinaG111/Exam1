@@ -238,15 +238,28 @@ body {
   box-shadow: var(--shadow);
 }
 
+.slider-shell-login {
+  margin-top: 0.35rem;
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .slider-frame {
   border-radius: 28px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.slider-frame .carousel-item {
+  height: clamp(440px, 60vw, 640px);
 }
 
 .slider-image {
   width: 100%;
-  height: clamp(220px, 32vw, 320px);
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain;
   object-position: center;
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .slider-indicators {
@@ -257,6 +270,11 @@ body {
   width: 10px !important;
   height: 10px !important;
   border-radius: 50%;
+}
+
+.slider-shell .carousel-control-prev-icon,
+.slider-shell .carousel-control-next-icon {
+  filter: brightness(0) saturate(100%);
 }
 
 .feature-panel {
@@ -543,9 +561,9 @@ body {
   .feature-image-logo,
   .feature-image-photo,
   .dashboard-promo img,
-  .slider-image {
+  .slider-frame .carousel-item {
     max-width: 100%;
-    height: 200px;
+    height: 320px;
   }
 
   .status-pill {
