@@ -1,0 +1,63 @@
+<%- include("../partials/head", { pageTitle }) %>
+<%- include("../partials/header") %>
+<%- include("../partials/flash", { errors }) %>
+
+<main class="container py-5">
+  <section class="hero-card mx-auto">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+      <div>
+        <p class="eyebrow">Регистрация пользователя</p>
+        <h1 class="display-6 fw-bold mb-2">Создание учетной записи</h1>
+        <p class="text-muted mb-0">
+          Укажите все обязательные персональные данные для доступа к оформлению заявок.
+        </p>
+      </div>
+      <a href="/login" class="btn btn-outline-primary">Уже зарегистрированы? Войти</a>
+    </div>
+
+    <form action="/register" method="post" class="row g-3 glass-panel">
+      <div class="col-md-6">
+        <label class="form-label" for="login">Логин</label>
+        <input
+          class="form-control"
+          id="login"
+          name="login"
+          type="text"
+          value="<%= formData.login %>"
+          placeholder="Только латиница и цифры, от 6 символов"
+        />
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="password">Пароль</label>
+        <input class="form-control" id="password" name="password" type="password" placeholder="Не менее 8 символов" />
+      </div>
+
+      <div class="col-12">
+        <label class="form-label" for="fullName">ФИО</label>
+        <input class="form-control" id="fullName" name="fullName" type="text" value="<%= formData.fullName %>" />
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label" for="birthDate">Дата рождения</label>
+        <input class="form-control" id="birthDate" name="birthDate" type="date" value="<%= formData.birthDate %>" />
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label" for="phone">Телефон</label>
+        <input class="form-control" id="phone" name="phone" type="tel" value="<%= formData.phone %>" />
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label" for="email">E-mail</label>
+        <input class="form-control" id="email" name="email" type="email" value="<%= formData.email %>" />
+      </div>
+
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<%- include("../partials/footer") %>

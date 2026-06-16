@@ -1,0 +1,35 @@
+<%- include("../partials/head", { pageTitle }) %>
+<%- include("../partials/header") %>
+<%- include("../partials/flash", { errors }) %>
+
+<main class="container py-5">
+  <section class="hero-card auth-card mx-auto">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6">
+        <p class="eyebrow">Управление заявками</p>
+        <h1 class="display-6 fw-bold mb-3">Вход администратора</h1>
+        <p class="text-muted mb-0">
+          Доступ к просмотру всех заявок и изменению статусов обучения.
+        </p>
+      </div>
+
+      <div class="col-lg-6">
+        <form action="/admin/login" method="post" class="glass-panel">
+          <div class="mb-3">
+            <label class="form-label" for="login">Логин</label>
+            <input class="form-control" id="login" name="login" type="text" value="<%= formData.login %>" />
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" for="password">Пароль</label>
+            <input class="form-control" id="password" name="password" type="password" />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Войти как администратор</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include("../partials/footer") %>

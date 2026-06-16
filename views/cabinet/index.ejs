@@ -1,0 +1,146 @@
+<%- include("../partials/head", { pageTitle }) %>
+<%- include("../partials/header") %>
+<%- include("../partials/flash", { errors }) %>
+
+<main class="container py-5">
+  <section class="hero-card mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <p class="eyebrow">Личный кабинет</p>
+        <h1 class="display-6 fw-bold mb-2"><%= currentUser.fullName %></h1>
+        <p class="text-muted mb-0">
+          Логин: <strong><%= currentUser.login %></strong> • Телефон: <strong><%= currentUser.phone %></strong>
+        </p>
+      </div>
+      <a href="/applications/new" class="btn btn-primary btn-lg">Оформить новую заявку</a>
+    </div>
+  </section>
+
+  <section class="row g-4">
+    <div class="col-xl-8">
+      <div class="glass-panel h-100">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow mb-1">История обращений</p>
+            <h2 class="h4 mb-0">Мои заявки</h2>
+          </div>
+        </div>
+
+        <% if (applications.length === 0) { %>
+          <p class="text-muted mb-0">Заявок пока нет. Создайте первую заявку на обучение.</p>
+        <% } else { %>
+          <div class="table-responsive">
+            <table class="table table-theme align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Транспорт</th>
+                  <th>Старт</th>
+                  <th>Оплата</th>
+                  <th>Статус</th>
+                  <th>Отзыв</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% applications.forEach((application) => { %>
+                  <tr>
+                    <td>#<%= application.id %></td>
+                    <td><%= application.transportType %></td>
+                    <td><%= application.startDate %></td>
+                    <td><%= application.paymentMethod %></td>
+                    <td>
+                      <span class="status-pill status-<%= application.status.replace(/\s+/g, '-').toLowerCase() %>">
+                        <%= application.status %>
+                      </span>
+                    </td>
+                    <td>
+                      <% if (application.reviewId) { %>
+                        <div class="small">
+                          <strong><%= application.reviewRating %>/5</strong><br />
+                          <span class="text-muted"><%= application.reviewContent %></span>
+                        </div>
+                      <% } else { %>
+                        <span class="text-muted small">Отзыв еще не оставлен</span>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="col-xl-4">
+      <div class="glass-panel mb-4">
+        <p class="eyebrow mb-1">Обратная связь</p>
+        <h2 class="h4">Оставить отзыв</h2>
+
+        <% if (reviewableApplications.length === 0) { %>
+          <p class="text-muted mb-0">
+            Отзыв можно оставить после завершения обучения по заявке.
+          </p>
+        <% } else { %>
+          <form action="/reviews" method="post">
+            <div class="mb-3">
+              <label class="form-label" for="applicationId">Завершенная заявка</label>
+              <select class="form-select" id="applicationId" name="applicationId">
+                <% reviewableApplications.forEach((application) => { %>
+                  <option
+                    value="<%= application.id %>"
+                    <%= String(reviewForm.applicationId) === String(application.id) ? "selected" : "" %>
+                  >
+                    #<%= application.id %> • <%= application.transportType %> • <%= application.startDate %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="rating">Оценка</label>
+              <select class="form-select" id="rating" name="rating">
+                <% [5, 4, 3, 2, 1].forEach((value) => { %>
+                  <option value="<%= value %>" <%= String(reviewForm.rating) === String(value) ? "selected" : "" %>>
+                    <%= value %>/5
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="content">Текст отзыва</label>
+              <textarea class="form-control" id="content" name="content" rows="5"><%= reviewForm.content %></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Сохранить отзыв</button>
+          </form>
+        <% } %>
+      </div>
+
+      <div class="glass-panel">
+        <p class="eyebrow mb-1">Архив отзывов</p>
+        <h2 class="h4">Мои отзывы</h2>
+
+        <% if (reviews.length === 0) { %>
+          <p class="text-muted mb-0">Пока нет сохраненных отзывов.</p>
+        <% } else { %>
+          <div class="review-list">
+            <% reviews.forEach((review) => { %>
+              <article class="review-card">
+                <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                  <strong><%= review.transportType %></strong>
+                  <span class="badge text-bg-primary"><%= review.rating %>/5</span>
+                </div>
+                <p class="mb-2"><%= review.content %></p>
+                <small class="text-muted"><%= review.startDate %></small>
+              </article>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include("../partials/footer") %>

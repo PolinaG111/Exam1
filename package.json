@@ -1,0 +1,31 @@
+{
+  "name": "exam",
+  "version": "1.0.0",
+  "description": "Driving school portal for river transport training",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PolinaG111/Exam1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PolinaG111/Exam1/issues"
+  },
+  "homepage": "https://github.com/PolinaG111/Exam1#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.11.1",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.2"
+  }
+}

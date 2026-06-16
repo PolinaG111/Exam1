@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    login TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    birth_date TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    email TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS applications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    transport_type TEXT NOT NULL,
+    start_date TEXT NOT NULL,
+    payment_method TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Новая',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    application_id INTEGER NOT NULL UNIQUE,
+    rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    content TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE
+);

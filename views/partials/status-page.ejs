@@ -1,0 +1,13 @@
+<%- include("head", { pageTitle }) %>
+<%- include("header") %>
+<%- include("flash", { errors: [] }) %>
+
+<main class="container py-5">
+  <section class="status-card mx-auto text-center">
+    <p class="eyebrow"><%= title %></p>
+    <h1 class="display-5 fw-bold mb-3"><%= message %></h1>
+    <a href="<%= backLink %>" class="btn btn-primary btn-lg"><%= backText %></a>
+  </section>
+</main>
+
+<%- include("footer") %>
