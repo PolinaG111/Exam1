@@ -4,51 +4,63 @@
 
 <main class="container py-5">
   <section class="hero-card mx-auto">
-    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-      <div>
-        <p class="eyebrow">Новая заявка</p>
-        <h1 class="display-6 fw-bold mb-2">Оформление обучения</h1>
-        <p class="text-muted mb-0">
-          Выберите формат обучения и способ оплаты. После отправки заявка попадет администратору.
-        </p>
+    <div class="row g-4 align-items-stretch">
+      <div class="col-xl-4">
+        <div class="feature-panel h-100">
+          <p class="eyebrow">Новая заявка</p>
+          <h1 class="display-6 fw-bold mb-3">Оформление обучения</h1>
+          <p class="text-muted mb-4">
+            Выберите формат обучения и способ оплаты. После отправки заявка автоматически уйдет на согласование.
+          </p>
+
+          <img class="feature-image feature-image-photo mb-4" src="/assets/liner.png" alt="Круизный лайнер" />
+
+          <div class="feature-note">
+            <strong>Стартовый статус:</strong>
+            <span>каждая новая заявка создается в состоянии «Новая».</span>
+          </div>
+
+          <a href="/dashboard" class="btn btn-outline-primary mt-4">Вернуться в кабинет</a>
+        </div>
       </div>
-      <a href="/dashboard" class="btn btn-outline-primary">Вернуться в кабинет</a>
+
+      <div class="col-xl-8">
+        <form action="/applications" method="post" class="row g-3 glass-panel h-100">
+          <div class="col-md-4">
+            <label class="form-label" for="transportType">Вид транспорта</label>
+            <select class="form-select" id="transportType" name="transportType">
+              <option value="">Выберите вариант</option>
+              <% transportTypes.forEach((transportType) => { %>
+                <option value="<%= transportType %>" <%= formData.transportType === transportType ? "selected" : "" %>>
+                  <%= transportType %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label" for="startDate">Предпочтительная дата старта</label>
+            <input class="form-control" id="startDate" name="startDate" type="date" value="<%= formData.startDate %>" />
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label" for="paymentMethod">Способ оплаты</label>
+            <select class="form-select" id="paymentMethod" name="paymentMethod">
+              <option value="">Выберите вариант</option>
+              <% paymentMethods.forEach((paymentMethod) => { %>
+                <option value="<%= paymentMethod %>" <%= formData.paymentMethod === paymentMethod ? "selected" : "" %>>
+                  <%= paymentMethod %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Отправить заявку</button>
+          </div>
+        </form>
+      </div>
     </div>
-
-    <form action="/applications" method="post" class="row g-3 glass-panel">
-      <div class="col-md-4">
-        <label class="form-label" for="transportType">Вид транспорта</label>
-        <select class="form-select" id="transportType" name="transportType">
-          <option value="">Выберите вариант</option>
-          <% transportTypes.forEach((transportType) => { %>
-            <option value="<%= transportType %>" <%= formData.transportType === transportType ? "selected" : "" %>>
-              <%= transportType %>
-            </option>
-          <% }) %>
-        </select>
-      </div>
-
-      <div class="col-md-4">
-        <label class="form-label" for="startDate">Предпочтительная дата старта</label>
-        <input class="form-control" id="startDate" name="startDate" type="date" value="<%= formData.startDate %>" />
-      </div>
-
-      <div class="col-md-4">
-        <label class="form-label" for="paymentMethod">Способ оплаты</label>
-        <select class="form-select" id="paymentMethod" name="paymentMethod">
-          <option value="">Выберите вариант</option>
-          <% paymentMethods.forEach((paymentMethod) => { %>
-            <option value="<%= paymentMethod %>" <%= formData.paymentMethod === paymentMethod ? "selected" : "" %>>
-              <%= paymentMethod %>
-            </option>
-          <% }) %>
-        </select>
-      </div>
-
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">Отправить заявку</button>
-      </div>
-    </form>
   </section>
 </main>
 

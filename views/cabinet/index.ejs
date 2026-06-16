@@ -4,15 +4,25 @@
 
 <main class="container py-5">
   <section class="hero-card mb-4">
-    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-      <div>
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-8">
         <p class="eyebrow">Личный кабинет</p>
         <h1 class="display-6 fw-bold mb-2"><%= currentUser.fullName %></h1>
-        <p class="text-muted mb-0">
+        <p class="text-muted mb-3">
           Логин: <strong><%= currentUser.login %></strong> • Телефон: <strong><%= currentUser.phone %></strong>
         </p>
+        <div class="hero-points">
+          <div class="hero-point">Контроль статусов обучения</div>
+          <div class="hero-point">Заявки по видам транспорта</div>
+          <div class="hero-point">Отзывы по завершенным курсам</div>
+        </div>
       </div>
-      <a href="/applications/new" class="btn btn-primary btn-lg">Оформить новую заявку</a>
+      <div class="col-lg-4">
+        <div class="dashboard-promo">
+          <img src="/assets/pier.jpg" alt="Причал" />
+          <a href="/applications/new" class="btn btn-primary btn-lg w-100 mt-3">Оформить новую заявку</a>
+        </div>
+      </div>
     </div>
   </section>
 
