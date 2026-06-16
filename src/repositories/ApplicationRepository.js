@@ -83,6 +83,78 @@ class ApplicationRepository {
       .all();
   }
 
+  findAdminPage({ status, transportType, search, sortBy, sortDir, page, pageSize }) {
+    const conditions = [];
+    const params = {};
+
+    if (status) {
+      conditions.push("a.status = @status");
+      params.status = status;
+    }
+
+    if (transportType) {
+      conditions.push("a.transport_type = @transportType");
+      params.transportType = transportType;
+    }
+
+    if (search) {
+      conditions.push(
+        "(u.full_name LIKE @search OR u.login LIKE @search OR u.phone LIKE @search OR u.email LIKE @search)"
+      );
+      params.search = `%${search}%`;
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+    const orderMap = {
+      createdAt: "a.created_at",
+      startDate: "a.start_date",
+      fullName: "u.full_name",
+      status: "a.status",
+      transportType: "a.transport_type",
+    };
+    const orderField = orderMap[sortBy] || orderMap.createdAt;
+    const orderDirection = sortDir === "asc" ? "ASC" : "DESC";
+    const offset = (page - 1) * pageSize;
+
+    const total = db
+      .prepare(
+        `SELECT COUNT(*) AS total
+         FROM applications a
+         INNER JOIN users u ON u.id = a.user_id
+         ${whereClause}`
+      )
+      .get(params).total;
+
+    const items = db
+      .prepare(
+        `SELECT a.id,
+                a.transport_type AS transportType,
+                a.start_date AS startDate,
+                a.payment_method AS paymentMethod,
+                a.status,
+                a.created_at AS createdAt,
+                u.full_name AS fullName,
+                u.login,
+                u.phone,
+                u.email
+         FROM applications a
+         INNER JOIN users u ON u.id = a.user_id
+         ${whereClause}
+         ORDER BY ${orderField} ${orderDirection}
+         LIMIT @pageSize OFFSET @offset`
+      )
+      .all({
+        ...params,
+        pageSize,
+        offset,
+      });
+
+    return {
+      items,
+      total,
+    };
+  }
+
   updateStatus(id, status) {
     db.prepare("UPDATE applications SET status = ? WHERE id = ?").run(status, id);
     return this.findById(id);

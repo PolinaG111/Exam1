@@ -1,6 +1,6 @@
 <%- include("../partials/head", { pageTitle }) %>
 <%- include("../partials/header") %>
-<%- include("../partials/flash", { errors }) %>
+<%- include("../partials/flash") %>
 
 <main class="container py-5">
   <section class="hero-card mx-auto">
@@ -28,31 +28,51 @@
         <form action="/applications" method="post" class="row g-3 glass-panel h-100">
           <div class="col-md-4">
             <label class="form-label" for="transportType">Вид транспорта</label>
-            <select class="form-select" id="transportType" name="transportType">
+            <select class="form-select <%= formState.hasFieldError('transportType') ? 'is-invalid' : '' %>" id="transportType" name="transportType">
               <option value="">Выберите вариант</option>
               <% transportTypes.forEach((transportType) => { %>
-                <option value="<%= transportType %>" <%= formData.transportType === transportType ? "selected" : "" %>>
+                <option value="<%= transportType %>" <%= formState.fields.transportType === transportType ? "selected" : "" %>>
                   <%= transportType %>
                 </option>
               <% }) %>
             </select>
+            <% if (formState.hasFieldError("transportType")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("transportType") %></div>
+            <% } %>
           </div>
 
           <div class="col-md-4">
             <label class="form-label" for="startDate">Предпочтительная дата старта</label>
-            <input class="form-control" id="startDate" name="startDate" type="date" value="<%= formData.startDate %>" />
+            <input
+              class="form-control <%= formState.hasFieldError('startDate') ? 'is-invalid' : '' %>"
+              id="startDate"
+              name="startDate"
+              type="text"
+              inputmode="numeric"
+              maxlength="10"
+              placeholder="ДД.ММ.ГГГГ"
+              value="<%= formState.fields.startDate %>"
+              data-date-mask="ru"
+            />
+            <div class="form-hint">Например: 18.07.2026</div>
+            <% if (formState.hasFieldError("startDate")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("startDate") %></div>
+            <% } %>
           </div>
 
           <div class="col-md-4">
             <label class="form-label" for="paymentMethod">Способ оплаты</label>
-            <select class="form-select" id="paymentMethod" name="paymentMethod">
+            <select class="form-select <%= formState.hasFieldError('paymentMethod') ? 'is-invalid' : '' %>" id="paymentMethod" name="paymentMethod">
               <option value="">Выберите вариант</option>
               <% paymentMethods.forEach((paymentMethod) => { %>
-                <option value="<%= paymentMethod %>" <%= formData.paymentMethod === paymentMethod ? "selected" : "" %>>
+                <option value="<%= paymentMethod %>" <%= formState.fields.paymentMethod === paymentMethod ? "selected" : "" %>>
                   <%= paymentMethod %>
                 </option>
               <% }) %>
             </select>
+            <% if (formState.hasFieldError("paymentMethod")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("paymentMethod") %></div>
+            <% } %>
           </div>
 
           <div class="col-12">

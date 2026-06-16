@@ -1,6 +1,6 @@
 <%- include("../partials/head", { pageTitle }) %>
 <%- include("../partials/header") %>
-<%- include("../partials/flash", { errors }) %>
+<%- include("../partials/flash") %>
 
 <main class="container py-5">
   <section class="hero-card auth-card mx-auto">
@@ -19,38 +19,88 @@
           <div class="col-md-6">
             <label class="form-label" for="login">Логин</label>
             <input
-              class="form-control"
+              class="form-control <%= formState.hasFieldError('login') ? 'is-invalid' : '' %>"
               id="login"
               name="login"
               type="text"
-              value="<%= formData.login %>"
+              value="<%= formState.fields.login %>"
               placeholder="Только латиница и цифры, от 6 символов"
             />
+            <div class="form-hint">Минимум 6 символов: латинские буквы и цифры.</div>
+            <% if (formState.hasFieldError("login")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("login") %></div>
+            <% } %>
           </div>
 
           <div class="col-md-6">
             <label class="form-label" for="password">Пароль</label>
-            <input class="form-control" id="password" name="password" type="password" placeholder="Не менее 8 символов" />
+            <input
+              class="form-control <%= formState.hasFieldError('password') ? 'is-invalid' : '' %>"
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Не менее 8 символов"
+            />
+            <div class="form-hint">Используйте надежный пароль длиной от 8 символов.</div>
+            <% if (formState.hasFieldError("password")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("password") %></div>
+            <% } %>
           </div>
 
           <div class="col-12">
             <label class="form-label" for="fullName">ФИО</label>
-            <input class="form-control" id="fullName" name="fullName" type="text" value="<%= formData.fullName %>" />
+            <input
+              class="form-control <%= formState.hasFieldError('fullName') ? 'is-invalid' : '' %>"
+              id="fullName"
+              name="fullName"
+              type="text"
+              value="<%= formState.fields.fullName %>"
+            />
+            <% if (formState.hasFieldError("fullName")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("fullName") %></div>
+            <% } %>
           </div>
 
           <div class="col-md-4">
             <label class="form-label" for="birthDate">Дата рождения</label>
-            <input class="form-control" id="birthDate" name="birthDate" type="date" value="<%= formData.birthDate %>" />
+            <input
+              class="form-control <%= formState.hasFieldError('birthDate') ? 'is-invalid' : '' %>"
+              id="birthDate"
+              name="birthDate"
+              type="date"
+              value="<%= formState.fields.birthDate %>"
+            />
+            <% if (formState.hasFieldError("birthDate")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("birthDate") %></div>
+            <% } %>
           </div>
 
           <div class="col-md-4">
             <label class="form-label" for="phone">Телефон</label>
-            <input class="form-control" id="phone" name="phone" type="tel" value="<%= formData.phone %>" />
+            <input
+              class="form-control <%= formState.hasFieldError('phone') ? 'is-invalid' : '' %>"
+              id="phone"
+              name="phone"
+              type="tel"
+              value="<%= formState.fields.phone %>"
+            />
+            <% if (formState.hasFieldError("phone")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("phone") %></div>
+            <% } %>
           </div>
 
           <div class="col-md-4">
             <label class="form-label" for="email">E-mail</label>
-            <input class="form-control" id="email" name="email" type="email" value="<%= formData.email %>" />
+            <input
+              class="form-control <%= formState.hasFieldError('email') ? 'is-invalid' : '' %>"
+              id="email"
+              name="email"
+              type="email"
+              value="<%= formState.fields.email %>"
+            />
+            <% if (formState.hasFieldError("email")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("email") %></div>
+            <% } %>
           </div>
 
           <div class="col-12">

@@ -1,17 +1,26 @@
 <% if (flash) { %>
-  <div class="container mt-4">
-    <div class="alert alert-<%= flash.type === 'success' ? 'success' : 'danger' %> shadow-sm mb-0">
-      <%= flash.message %>
+  <div class="toast-stack">
+    <div
+      class="toast align-items-center text-bg-<%= flash.type === 'success' ? 'success' : 'danger' %> border-0 show app-toast"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      data-autohide="true"
+    >
+      <div class="d-flex">
+        <div class="toast-body"><%= flash.message %></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+      </div>
     </div>
   </div>
 <% } %>
 
-<% if (errors && errors.length > 0) { %>
+<% if (generalErrors && generalErrors.length > 0) { %>
   <div class="container mt-4">
     <div class="alert alert-danger shadow-sm mb-0">
       <ul class="mb-0 ps-3">
-        <% errors.forEach((error) => { %>
-          <li><%= error.msg %></li>
+        <% generalErrors.forEach((error) => { %>
+          <li><%= error %></li>
         <% }) %>
       </ul>
     </div>

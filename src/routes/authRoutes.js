@@ -1,6 +1,7 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const authService = require("../services/AuthService");
+const { buildFormState } = require("../utils/formUtils");
 
 const router = express.Router();
 
@@ -25,10 +26,12 @@ const registrationValidation = [
 ];
 
 router.get("/login", (req, res) => {
+  const formState = buildFormState([], { login: "" });
+
   res.render("auth/login", {
     pageTitle: "Вход",
-    errors: [],
-    formData: { login: "" },
+    generalErrors: [],
+    formState,
   });
 });
 
@@ -40,12 +43,15 @@ router.post(
   ],
   async (req, res) => {
     const errors = validationResult(req);
+    const formState = buildFormState(errors.array(), {
+      login: req.body.login || "",
+    });
 
     if (!errors.isEmpty()) {
       return res.status(422).render("auth/login", {
         pageTitle: "Вход",
-        errors: errors.array(),
-        formData: { login: req.body.login || "" },
+        generalErrors: formState.generalErrors,
+        formState,
       });
     }
 
@@ -56,43 +62,52 @@ router.post(
       req.flash("success", "Вы успешно вошли в личный кабинет.");
       return res.redirect("/dashboard");
     } catch (error) {
+      const failedState = buildFormState(
+        [{ path: "password", msg: error.message }],
+        { login: req.body.login || "" }
+      );
+
       return res.status(401).render("auth/login", {
         pageTitle: "Вход",
-        errors: [{ msg: error.message }],
-        formData: { login: req.body.login || "" },
+        generalErrors: failedState.generalErrors,
+        formState: failedState,
       });
     }
   }
 );
 
 router.get("/register", (req, res) => {
+  const formState = buildFormState([], {
+    login: "",
+    fullName: "",
+    birthDate: "",
+    phone: "",
+    email: "",
+  });
+
   res.render("auth/register", {
     pageTitle: "Регистрация",
-    errors: [],
-    formData: {
-      login: "",
-      fullName: "",
-      birthDate: "",
-      phone: "",
-      email: "",
-    },
+    generalErrors: [],
+    formState,
   });
 });
 
 router.post("/register", registrationValidation, async (req, res) => {
   const errors = validationResult(req);
+  const fields = {
+    login: req.body.login || "",
+    fullName: req.body.fullName || "",
+    birthDate: req.body.birthDate || "",
+    phone: req.body.phone || "",
+    email: req.body.email || "",
+  };
+  const formState = buildFormState(errors.array(), fields);
 
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/register", {
       pageTitle: "Регистрация",
-      errors: errors.array(),
-      formData: {
-        login: req.body.login || "",
-        fullName: req.body.fullName || "",
-        birthDate: req.body.birthDate || "",
-        phone: req.body.phone || "",
-        email: req.body.email || "",
-      },
+      generalErrors: formState.generalErrors,
+      formState,
     });
   }
 
@@ -103,16 +118,12 @@ router.post("/register", registrationValidation, async (req, res) => {
     req.flash("success", "Регистрация завершена. Добро пожаловать в систему.");
     return res.redirect("/dashboard");
   } catch (error) {
+    const failedState = buildFormState([{ path: "login", msg: error.message }], fields);
+
     return res.status(409).render("auth/register", {
       pageTitle: "Регистрация",
-      errors: [{ msg: error.message }],
-      formData: {
-        login: req.body.login || "",
-        fullName: req.body.fullName || "",
-        birthDate: req.body.birthDate || "",
-        phone: req.body.phone || "",
-        email: req.body.email || "",
-      },
+      generalErrors: failedState.generalErrors,
+      formState: failedState,
     });
   }
 });

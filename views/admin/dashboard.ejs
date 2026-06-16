@@ -1,6 +1,6 @@
 <%- include("../partials/head", { pageTitle }) %>
 <%- include("../partials/header") %>
-<%- include("../partials/flash", { errors: [] }) %>
+<%- include("../partials/flash") %>
 
 <main class="container py-5">
   <section class="hero-card">
@@ -17,20 +17,68 @@
       </div>
     </div>
 
+    <div class="glass-panel admin-tools mb-4">
+      <form action="/admin/dashboard" method="get" class="row g-3 align-items-end">
+        <div class="col-sm-6 col-xl-3">
+          <label class="form-label" for="search">Поиск</label>
+          <input class="form-control" id="search" name="search" type="text" value="<%= filters.search %>" placeholder="ФИО, логин, почта" />
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <label class="form-label" for="status">Статус</label>
+          <select class="form-select" id="status" name="status">
+            <option value="">Все статусы</option>
+            <% statuses.forEach((status) => { %>
+              <option value="<%= status %>" <%= filters.status === status ? "selected" : "" %>><%= status %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <label class="form-label" for="transportType">Транспорт</label>
+          <select class="form-select" id="transportType" name="transportType">
+            <option value="">Все варианты</option>
+            <% transportTypes.forEach((transportType) => { %>
+              <option value="<%= transportType %>" <%= filters.transportType === transportType ? "selected" : "" %>><%= transportType %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <label class="form-label" for="sortBy">Сортировка</label>
+          <select class="form-select" id="sortBy" name="sortBy">
+            <option value="createdAt" <%= filters.sortBy === "createdAt" ? "selected" : "" %>>По дате создания</option>
+            <option value="startDate" <%= filters.sortBy === "startDate" ? "selected" : "" %>>По дате старта</option>
+            <option value="fullName" <%= filters.sortBy === "fullName" ? "selected" : "" %>>По ФИО</option>
+            <option value="status" <%= filters.sortBy === "status" ? "selected" : "" %>>По статусу</option>
+          </select>
+        </div>
+        <input type="hidden" name="sortDir" value="<%= filters.sortDir %>" />
+        <div class="col-12 d-flex flex-wrap gap-2">
+          <button type="submit" class="btn btn-primary">Применить</button>
+          <a href="/admin/dashboard" class="btn btn-outline-primary">Сбросить</a>
+          <span class="admin-tools-note">Найдено заявок: <strong><%= pagination.totalItems %></strong></span>
+        </div>
+      </form>
+    </div>
+
     <% if (applications.length === 0) { %>
       <p class="text-muted mb-0">В системе пока нет заявок.</p>
     <% } else { %>
-      <div class="table-responsive">
+      <div class="table-responsive desktop-table">
         <table class="table table-theme align-middle mb-0">
           <thead>
             <tr>
               <th>ID</th>
-              <th>Пользователь</th>
+              <th>
+                <a class="sort-link" href="/admin/dashboard?<%= new URLSearchParams({ ...filters, sortBy: 'fullName', sortDir: filters.sortBy === 'fullName' && filters.sortDir === 'asc' ? 'desc' : 'asc', page: '1' }).toString() %>">Пользователь</a>
+              </th>
               <th>Контакты</th>
               <th>Транспорт</th>
-              <th>Старт</th>
+              <th>
+                <a class="sort-link" href="/admin/dashboard?<%= new URLSearchParams({ ...filters, sortBy: 'startDate', sortDir: filters.sortBy === 'startDate' && filters.sortDir === 'asc' ? 'desc' : 'asc', page: '1' }).toString() %>">Старт</a>
+              </th>
               <th>Оплата</th>
-              <th>Статус</th>
+              <th>
+                <a class="sort-link" href="/admin/dashboard?<%= new URLSearchParams({ ...filters, sortBy: 'status', sortDir: filters.sortBy === 'status' && filters.sortDir === 'asc' ? 'desc' : 'asc', page: '1' }).toString() %>">Статус</a>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -46,10 +94,11 @@
                   <span class="text-muted small"><%= application.email %></span>
                 </td>
                 <td><%= application.transportType %></td>
-                <td><%= application.startDate %></td>
+                <td><%= application.startDateFormatted %></td>
                 <td><%= application.paymentMethod %></td>
                 <td>
-                  <form action="/admin/applications/<%= application.id %>/status" method="post" class="d-flex gap-2">
+                  <form action="/admin/applications/<%= application.id %>/status" method="post" class="d-flex gap-2 admin-status-form">
+                    <input type="hidden" name="returnTo" value="/admin/dashboard?<%= new URLSearchParams({ ...filters, page: String(pagination.currentPage) }).toString() %>" />
                     <select class="form-select form-select-sm" name="status">
                       <% statuses.forEach((status) => { %>
                         <option value="<%= status %>" <%= application.status === status ? "selected" : "" %>>
@@ -65,8 +114,87 @@
           </tbody>
         </table>
       </div>
+
+      <div class="mobile-cards">
+        <% applications.forEach((application) => { %>
+          <article class="mobile-info-card">
+            <div class="mobile-card-head">
+              <strong><%= application.fullName %></strong>
+              <span class="status-pill status-<%= application.status.replace(/\s+/g, '-').toLowerCase() %>">
+                <%= application.status %>
+              </span>
+            </div>
+            <dl class="mobile-card-grid mb-3">
+              <div>
+                <dt>Логин</dt>
+                <dd><%= application.login %></dd>
+              </div>
+              <div>
+                <dt>Транспорт</dt>
+                <dd><%= application.transportType %></dd>
+              </div>
+              <div>
+                <dt>Старт</dt>
+                <dd><%= application.startDateFormatted %></dd>
+              </div>
+              <div>
+                <dt>Оплата</dt>
+                <dd><%= application.paymentMethod %></dd>
+              </div>
+              <div class="w-100">
+                <dt>Контакты</dt>
+                <dd><%= application.phone %> • <%= application.email %></dd>
+              </div>
+            </dl>
+            <form action="/admin/applications/<%= application.id %>/status" method="post" class="d-flex gap-2 admin-status-form">
+              <input type="hidden" name="returnTo" value="/admin/dashboard?<%= new URLSearchParams({ ...filters, page: String(pagination.currentPage) }).toString() %>" />
+              <select class="form-select form-select-sm" name="status">
+                <% statuses.forEach((status) => { %>
+                  <option value="<%= status %>" <%= application.status === status ? "selected" : "" %>><%= status %></option>
+                <% }) %>
+              </select>
+              <button type="submit" class="btn btn-primary btn-sm">Сохранить</button>
+            </form>
+          </article>
+        <% }) %>
+      </div>
+
+      <nav class="pagination-shell mt-4" aria-label="Постраничная навигация">
+        <ul class="pagination mb-0">
+          <li class="page-item <%= pagination.hasPrev ? '' : 'disabled' %>">
+            <a class="page-link" href="/admin/dashboard?<%= new URLSearchParams({ ...filters, page: String(Math.max(1, pagination.currentPage - 1)) }).toString() %>">Назад</a>
+          </li>
+          <% for (let page = 1; page <= pagination.totalPages; page += 1) { %>
+            <li class="page-item <%= page === pagination.currentPage ? 'active' : '' %>">
+              <a class="page-link" href="/admin/dashboard?<%= new URLSearchParams({ ...filters, page: String(page) }).toString() %>"><%= page %></a>
+            </li>
+          <% } %>
+          <li class="page-item <%= pagination.hasNext ? '' : 'disabled' %>">
+            <a class="page-link" href="/admin/dashboard?<%= new URLSearchParams({ ...filters, page: String(Math.min(pagination.totalPages, pagination.currentPage + 1)) }).toString() %>">Далее</a>
+          </li>
+        </ul>
+      </nav>
     <% } %>
   </section>
 </main>
+
+<div class="modal fade" id="statusConfirmModal" tabindex="-1" aria-labelledby="statusConfirmLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header">
+        <h2 class="modal-title h5 mb-0" id="statusConfirmLabel">Подтвердить изменение статуса</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-2">Новый статус заявки:</p>
+        <p class="fw-semibold mb-0" data-modal-status-label>Не выбран</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" data-confirm-status-submit>Подтвердить</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <%- include("../partials/footer") %>

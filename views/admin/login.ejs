@@ -1,6 +1,6 @@
 <%- include("../partials/head", { pageTitle }) %>
 <%- include("../partials/header") %>
-<%- include("../partials/flash", { errors }) %>
+<%- include("../partials/flash") %>
 
 <main class="container py-5">
   <section class="hero-card auth-card mx-auto">
@@ -18,12 +18,29 @@
         <form action="/admin/login" method="post" class="glass-panel">
           <div class="mb-3">
             <label class="form-label" for="login">Логин</label>
-            <input class="form-control" id="login" name="login" type="text" value="<%= formData.login %>" />
+            <input
+              class="form-control <%= formState.hasFieldError('login') ? 'is-invalid' : '' %>"
+              id="login"
+              name="login"
+              type="text"
+              value="<%= formState.fields.login %>"
+            />
+            <% if (formState.hasFieldError("login")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("login") %></div>
+            <% } %>
           </div>
 
           <div class="mb-4">
             <label class="form-label" for="password">Пароль</label>
-            <input class="form-control" id="password" name="password" type="password" />
+            <input
+              class="form-control <%= formState.hasFieldError('password') ? 'is-invalid' : '' %>"
+              id="password"
+              name="password"
+              type="password"
+            />
+            <% if (formState.hasFieldError("password")) { %>
+              <div class="invalid-feedback d-block"><%= formState.getFieldError("password") %></div>
+            <% } %>
           </div>
 
           <button type="submit" class="btn btn-primary w-100">Войти как администратор</button>
